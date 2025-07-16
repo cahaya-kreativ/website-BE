@@ -1,0 +1,265 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  admin
+  employee
+}
+
+enum OrderStatus {
+  unpaid
+  process
+  done
+  cancelled
+  pending
+}
+
+enum PaymentStatus {
+  unpaid
+  paid
+  cancelled
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum CategoryGallery {
+  wedding
+  graduation
+  event
+  sosmed
+}
+
+enum PaymentMethod {
+  fullPayment
+  downPayment
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  fullname      String
+  email         String         @unique
+  phoneNumber   String?
+  password      String?
+  google_id     String?
+  isVerified    Boolean        @default(false)
+  role          Role           @default(user)
+  otp           String?
+  otpCreatedAt  DateTime?
+  profile       Profile?
+  notification  Notification[]
+  sentChats     Chat[]         @relation("SentChats")
+  receivedChats Chat[]         @relation("ReceivedChats")
+  orders        Order[]
+
+  @@map("users")
+}
+
+model Profile {
+  id          Int       @id @default(autoincrement())
+  avatar_url  String?
+  birth_date  DateTime?
+  address     String    @default("")
+  city        String    @default("")
+  province    String    @default("")
+  postal_code String    @default("")
+  user_id     Int       @unique
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime
+  user_id   Int
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Chat {
+  id          Int      @id @default(autoincrement())
+  message     String   @db.Text
+  createdAt   DateTime
+  isRead      Boolean  @default(false)
+  image_url   String?
+  sender_id   Int
+  receiver_id Int
+  sender      User     @relation("SentChats", fields: [sender_id], references: [id])
+  receiver    User     @relation("ReceivedChats", fields: [receiver_id], references: [id])
+
+  @@map("chats")
+}
+
+model Portfolio {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String           @db.Text
+  product_id  Int
+  createdAt   DateTime
+  product     Product          @relation(fields: [product_id], references: [id])
+  media       PortfolioMedia[]
+
+  @@map("portfolios")
+}
+
+model PortfolioMedia {
+  id           Int       @id @default(autoincrement())
+  url          String
+  type         MediaType // Enum untuk tipe media
+  portfolio_id Int
+  createdAt    DateTime
+  portfolio    Portfolio @relation(fields: [portfolio_id], references: [id])
+
+  @@map("portfolio_media")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  image       String
+  createdAt   DateTime
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String        @db.Text
+  label        String        @unique
+  detail       String        @db.Text
+  image        String
+  isAvailable  Boolean       @default(true)
+  price        Decimal       @db.Decimal(10, 2)
+  duration     Int           @default(2)
+  createdAt    DateTime
+  note         String?
+  addOn        String?
+  category_id  Int
+  portfolios   Portfolio[]
+  category     Category      @relation(fields: [category_id], references: [id])
+  reviews      Review[]
+  orderDetails OrderDetail[]
+
+  @@map("products")
+}
+
+model Order {
+  id               Int           @id @default(autoincrement())
+  code             String        @unique
+  status           OrderStatus   @default(pending)
+  note             String?       @db.Text
+  total_amount     Decimal       @db.Decimal(10, 2)
+  createdAt        DateTime
+  expired_paid     DateTime
+  user_id          Int
+  schedule_id      Int?
+  is_paid          Boolean       @default(false)
+  remaining_amount Decimal?      @db.Decimal(10, 2)
+  user             User          @relation(fields: [user_id], references: [id])
+  schedule         Schedule?     @relation(fields: [schedule_id], references: [id])
+  orderDetails     OrderDetail[]
+  payments         Payment[]
+  reviews          Review?
+
+  @@map("orders")
+}
+
+model DiscountCode {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  percentage Int
+  status     Boolean  @default(true)
+  createdAt  DateTime
+  updatedAt  DateTime
+
+  @@map("discounts")
+}
+
+model OrderDetail {
+  id         Int      @id @default(autoincrement())
+  order_id   Int
+  product_id Int
+  quantity   Int
+  price      Decimal  @db.Decimal(10, 2)
+  subtotal   Decimal  @db.Decimal(10, 2)
+  discount   Decimal? @db.Decimal(10, 2) // Field opsional untuk menyimpan jumlah diskon
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [product_id], references: [id])
+
+  @@map("order_details")
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  order_id       Int
+  payment_stage  Int?
+  amount         String
+  method_payment PaymentMethod
+  payment_url    String
+  status         PaymentStatus @default(unpaid)
+  createdAt      DateTime
+  order          Order         @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@unique([order_id, payment_stage], name: "order_id_payment_stage")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  rating     Int      @db.SmallInt
+  comment    String   @db.Text
+  createdAt  DateTime
+  order_id   Int      @unique
+  product_id Int
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [product_id], references: [id])
+
+  @@map("reviews")
+}
+
+model Schedule {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  time      DateTime
+  endTime   DateTime
+  endDate   DateTime
+  location  String
+  duration  Int
+  isBooked  Boolean  @default(true)
+  createdAt DateTime
+  note      String?
+  orders    Order[]
+
+  @@map("schedules")
+}
+
+model Gallery {
+  id        Int      @id @default(autoincrement())
+  category  String
+  createdAt DateTime
+  image     String // URL media
+
+  @@map("galleries")
+}

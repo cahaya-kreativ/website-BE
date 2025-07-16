@@ -1,0 +1,14 @@
+name: Run Daily Order Expiry Check
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Setiap hari pukul 00:00 UTC
+  workflow_dispatch: {} # Untuk trigger manual
+
+jobs:
+  run-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger cron endpoint
+        run: |
+          curl -X POST "${{ secrets.VERCEL_CRONJOB_URL }}?token=${{ secrets.CRONTAB_SECRET_TOKEN }}"
