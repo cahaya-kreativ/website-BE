@@ -36,7 +36,8 @@
     "pg-pool": "^3.7.0",
     "qr-image": "^3.2.0",
     "swagger-ui-express": "^5.0.1",
-    "yaml": "^2.7.0"
+    "yaml": "^2.7.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "prisma": "^6.6.0"

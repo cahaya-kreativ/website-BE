@@ -21,18 +21,18 @@ const Chat = require("./chat.routes")
 const Gallery = require("./gallery.routes")
 const Admin = require("./admin.routes")
 
-const swagger_path = path.resolve(__dirname, "../docs/api-docs.yaml");
-const customCssUrl =
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css";
-const customJs = [
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js",
-];
-const file = fs.readFileSync(swagger_path, "utf-8");
+// const swagger_path = path.resolve(__dirname, "../docs/api-docs.yaml");
+// const customCssUrl =
+//   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css";
+// const customJs = [
+//   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js",
+//   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js",
+// ];
+// const file = fs.readFileSync(swagger_path, "utf-8");
 
-// API Docs
-const swaggerDocument = YAML.parse(file);
-router.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument, { customCssUrl, customJs }));
+// // API Docs
+// const swaggerDocument = YAML.parse(file);
+// router.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument, { customCssUrl, customJs }));
 
 // API
 router.use("/api/v1", User)
