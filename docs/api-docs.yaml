@@ -1,0 +1,3512 @@
+# openapi: 3.0.1
+# info:
+#   title: Cahaya Kreativ API
+#   description: API Cahaya Kreativ Website
+#   version: 1.0.0
+# servers:
+#   - url: https://cahaya-kreativ-be.vercel.app/api/v1
+#   - url: http://localhost:3000/api/v1
+# tags:
+#   - name: "Users"
+#     description: Operations about User
+#   - name: "Profiles"
+#     description: Operations about Profile User
+#   - name: "Product"
+#     description: Operations about Catalog Product
+#   - name: "Categories"
+#     description: Operations about Category Product
+#   - name : "Portfolio"
+#     description: Operations about Portfolio Product
+#   - name : "Orders"
+#     description: Operations about Order Product
+#   - name: "Payments"
+#     description: Operations about Payment
+#   - name: "Notifications"
+#     description: Operations about Notification
+#   - name: "Reviews"
+#     description: "Operations about Reviews"
+#   - name: "Schedule"
+#     description: Operations about Schedule for Admin
+# paths:
+#   /users/register:
+#     post:
+#       tags:
+#         - "Users"
+#       summary: Register user
+#       description: Register user with the provided information.
+#       requestBody:
+#         $ref: "#/components/requestBodies/createUser"
+
+#       responses:
+#         201:
+#           description: User created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: User Created Successfully
+#                   data:
+#                     $ref: "#/components/schemas/UserResponse"
+
+#         400:
+#           description: Input must be required!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Input must be required
+#                   data:
+#                     example: ~
+
+#         401:
+#           description: Email already used!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Email already used!
+#                   data:
+#                     example: ~
+
+#         402:
+#           description: Invalid Format Password
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Invalid password format. It must contain at least 1 lowercase, 1 uppercase, 1 digit number, 1 symbol, and be between 8 and 12 characters long.
+#                   data:
+#                     example: ~
+
+#   /users/login:
+#     post:
+#       tags:
+#         - "Users"
+#       summary: Login user
+#       description: Login user with the provided information.
+#       requestBody:
+#         $ref: "#/components/requestBodies/createLogin"
+
+#       responses:
+#         201:
+#           description: Login was successful
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: Login was successfull
+#                   data:
+#                     allOf:
+#                       - $ref: "#/components/schemas/UserResponse"
+#                       - type: object
+#                         properties:
+#                           token:
+#                             type: integer
+#                             example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZnVsbG5hbWUiOiJCYWd1cyBEd2kgUHV0cmEgQWRpeW9ubyIsImZhbWlseV9uYW1lIjpudWxsLCJlbWFpbCI6InN1Z2FiLmR3aTg4QGdtYWlsLmNvbSIsInBob25lTnVtYmVyIjoiMDgyMjI5NzQ5NDYyIiwiYXZhdGFyX3VybCI6bnVsbCwiZ29vZ2xlX2lkIjpudWxsLCJvdHAiOiI2NjI1NDMiLCJvdHBDcmVhdGVkQXQiOiIyMDI0LTA1LTI0VDE2OjEzOjU2LjA4OFoiLCJpc1ZlcmlmaWVkIjp0cnVlLCJyb2xlIjoidXNlciIsImlhdCI6MTcxNjU2NzI1OH0._tBfHd_s_J9UWnblX_tHjnTmmt5b2PdXpvekhjHRXF0
+
+#         400:
+#           description: invalid email or password!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: invalid email or password!
+#                   data:
+#                     example: ~
+
+#         401:
+#           description: invalid login!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Authentication failed. Please use Google OAuth to log in!
+#                   data:
+#                     example: ~
+
+#         403:
+#           description: Verify Account User!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Account not verified. Please check your email or spam!
+#                   data:
+#                     example: ~
+
+#   /users/verify-otp:
+#     put:
+#       tags:
+#         - "Users"
+#       summary: Verify Otp Email User
+#       description: Verify Otp Email User
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 email:
+#                   type: string
+#                   format: email
+#                   example: sugab.dwi88@gmail.com
+#                 otp:
+#                   type: string
+#                   example: 123456
+
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Activation successfully. You're Account is Verified"
+#                   data:
+#                     $ref: "#/components/schemas/UserResponse"
+
+#         400:
+#           description: OTP Expired
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "OTP has expired. Please resend new otp."
+#                   data:
+#                     example: ~
+
+#         401:
+#           description: Invalid OTP
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Invalid OTP"
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: user not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "user not found"
+#                   data:
+#                     example: ~
+
+#   /users/resend-otp:
+#     put:
+#       tags:
+#         - "Users"
+#       summary: Resend Verify Otp Email User
+#       description: Resend Verify Otp Email User
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 email:
+#                   type: string
+#                   format: email
+#                   example: sugab.dwi88@gmail.com
+
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Resend OTP successfully, Check your email or spam!"
+#                   data:
+#                     $ref: "#/components/schemas/UserResponse"
+
+#         400:
+#           description: Email must be required
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Email must be required."
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: user not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "user not found"
+#                   data:
+#                     example: ~
+
+#   /users/forget-password:
+#     post:
+#       tags:
+#         - "Users"
+#       summary: Forget Password Email User
+#       description: Forget Password Email User
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 email:
+#                   type: string
+#                   format: email
+#                   example: sugab.dwi88@gmail.com
+
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Success Send Email Forget Password, Check your email or spam!"
+
+#         400:
+#           description: Email must be required
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Email must be required."
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: user not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "user not found"
+#                   data:
+#                     example: ~
+
+#   /users/reset-password:
+#     put:
+#       tags:
+#         - "Users"
+#       summary: Reset Password Email User
+#       parameters:
+#         - schema:
+#             type: string
+#           name: token
+#           in: query
+#           description: token for update password
+#       description: Reset Password Email User
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 password:
+#                   type: string
+#                   example: Bagusdpa4.
+#                 passwordConfirmation:
+#                   type: string
+#                   example: Bagusdpa4.
+
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Your password has been updated successfully!"
+#                   data:
+#                     $ref: "#/components/schemas/UserResponse"
+
+#         400:
+#           description: Both password and password confirmation are required!!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Both password and password confirmation are required!!"
+#                   data:
+#                     example: ~
+
+#         401:
+#           description: Please ensure that the password and password confirmation match!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Please ensure that the password and password confirmation match!"
+#                   data:
+#                     example: ~
+
+#         403:
+#           description: Invalid or expired token!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Invalid or expired token!"
+#                   data:
+#                     example: ~
+
+#   /users/authenticate:
+#     get:
+#       tags:
+#         - "Users"
+#       summary: Authenticate user
+#       description: Authenticate user with the token.
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: OK
+#                   data:
+#                     $ref: "#/components/schemas/UserWithProfileResponse"
+
+#         403:
+#           description: Token not provided!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: token not provided!!
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: User not found!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: User not found!!
+#                   data:
+#                     example: ~
+
+#         409:
+#           description: jwt malformed!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: jwt malformed
+#                   data:
+#                     example: ~
+#       security:
+#         - bearerAuth: []
+
+#   /users/loginGoogle:
+#     post:
+#       tags:
+#         - "Users"
+#       summary: Login by Google
+#       description: Login by Google by Access Token (Google Playground -> OAuth2 -> userinfo.email and userinfo.profile checked)
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 access_token:
+#                   type: string
+#                   example: ya29.a0AXooCgsJUw2LZB7y5pTKZK7NPEUM7ehfBs-6AaF6Jj3MsOPT1ih4NoemDxDBR2KETaS2YulZ62IuPcmtsE_04vOfsL85qhdKFysCDunvrGAdwh68huXM7_42leXW0tlKlk4hWO64nYNYqsJjVoYvaKCEVfqP-TOBmCDOaCgYKAVMSARISFQHGX2Mixra-LLm6wRoWlIQNS_wAyw0171
+
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: Successfully login with Google
+#                   data:
+#                     type: object
+#                     properties:
+#                       user:
+#                         type: object
+#                         properties:
+#                           id:
+#                             type: string
+#                             example: 7e775854-aad8-4ad5-89f1-09b7b3481ba3
+#                           name:
+#                             type: string
+#                             example: John Doe
+#                           email:
+#                             type: string
+#                             example: example@gmail.com
+#                           is_verified:
+#                             type: boolean
+#                             example: true
+#                           role:
+#                             type: string
+#                             example: USER
+#                           createdAt:
+#                             type: string
+#                             format: datetime
+#                             example: "2024-05-29T15:20:20.554Z"
+#                           updatedAt:
+#                             type: string
+#                             format: datetime
+#                             example: "2024-05-29T15:20:20.554Z"
+
+#                       token:
+#                         type: string
+#                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGFzc3dvcmQiOm51bGwsImlhdCI6MTc0MTAwMzg4OH0.vYD17x5wi-VUQ1tBH9lWJzI7dedmbIHQy_4Z0yoUBKM
+
+#         400:
+#           description: Input must be required
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Missing required field
+#                   data:
+#                     example: ~
+
+#   /users/google:
+#     get:
+#       tags:
+#         - "Users"
+#       summary: Google OAuth Login
+#       description: Redirect to Google OAuth login page
+#       responses:
+#         302:
+#           description: Redirects to Google login page
+#           headers:
+#             Location:
+#               schema:
+#                 type: string
+#               description: URL to Google OAuth login page
+#               example: https://accounts.google.com/o/oauth2/v2/auth
+
+#   /users/google/callback:
+#     get:
+#       tags:
+#         - "Users"
+#       summary: Google OAuth Callback
+#       description: Callback endpoint for Google OAuth
+#       parameters:
+#         - in: query
+#           name: code
+#           schema:
+#             type: string
+#           description: Authorization code from Google
+#       responses:
+#         200:
+#           description: Successfully authenticated with Google
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Successfully login with Google"
+#                   data:
+#                     type: object
+#                     properties:
+#                       user:
+#                         $ref: "#/components/schemas/UserWithProfileResponse"
+#                       token:
+#                         type: string
+#                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+#         401:
+#           description: Authentication failed
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Authentication failed"
+#                   data:
+#                     example: ~
+#       security:
+#         - google_oauth: []
+
+#   /users/profile:
+#     get:
+#       tags:
+#         - "Profiles"
+#       summary: Profile user
+#       description: Information profile user with the token.
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: OK
+#                   data:
+#                     $ref: "#/components/schemas/UserWithProfileResponse"
+
+#         403:
+#           description: Token not provided!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: token not provided!!
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: User not found!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: User not found!!
+#                   data:
+#                     example: ~
+
+#       security:
+#         - bearerAuth: []
+
+#     put:
+#       tags:
+#         - "Profiles"
+#       summary: Profile user
+#       description: Information profile user with the token.
+#       requestBody:
+#         required: true
+#         content:
+#           multipart/form-data:
+#             schema:
+#               type: object
+#               properties:
+#                 fullname:
+#                   type: string
+#                   example: "Bagus Dwi Putra Adiyono"
+#                 phoneNumber:
+#                   type: string
+#                   example: "08947583901"
+#                 birth_date:
+#                   type: string
+#                   format: date
+#                   nullable: true
+#                   example: null
+#                 address:
+#                   type: string
+#                   example: "Alam Pesona 1 E2/27, Krian"
+#                 city:
+#                   type: string
+#                   example: "Sidoarjo"
+#                 province: 
+#                   type: string
+#                   example: Jawa Timur
+#                 postal_code: 
+#                   type: string
+#                   example: 60282
+#                 avatar_url:
+#                   type: string
+#                   format: binary
+#                   description: "Avatar image file max 2MB"
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: OK
+#                   data:
+#                     $ref: "#/components/schemas/UserWithProfileResponse"
+
+#         400:
+#           description: File upload error!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Format error!!
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: User not found!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: User not found!!
+#                   data:
+#                     example: ~
+
+#       security:
+#         - bearerAuth: []
+
+#   /users/profile/change-password:
+#     put:
+#       tags:
+#         - "Profiles"
+#       summary: Profile user
+#       description: Information profile user with the token.
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 oldPassword: 
+#                   type: string
+#                   example: "Bagusdpa4."
+#                 newPassword:
+#                   type: string
+#                   example: Bagusdpa4#
+#                 newPasswordConfirmation: 
+#                   type: string
+#                   example: Bagusdpa4#
+#       responses:
+#         200:
+#           description: Success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: OK
+#                   data:
+#                     $ref: "#/components/schemas/UserWithProfileResponse"
+
+#         400:
+#           description: Input must be required!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: All fields must be provided!!
+#                   data:
+#                     example: ~
+        
+#         401:
+#           description: Incorrect old password!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Incorrect old password!!
+#                   data:
+#                     example: ~
+
+#         404:
+#           description: User not found!
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: User not found!!
+#                   data:
+#                     example: ~
+
+#       security:
+#         - bearerAuth: []
+
+#   /categories:
+#     post:
+#       tags:
+#         - "Categories"
+#       summary: Create new category
+#       description: Create a new product category (Admin only)
+#       security:
+#         - bearerAuth: []
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 name:
+#                   type: string
+#                   example: "Fotografi"
+
+#       responses:
+#         201:
+#           description: Category created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Category created successfully"
+#                   data:
+#                     type: object
+#                     properties:
+#                       id:
+#                         type: integer
+#                         example: 1
+#                       name:
+#                         type: string
+#                         example: "Fotografi"
+#                       createdAt:
+#                         type: string
+#                         format: date-time
+#                         example: "2024-03-24T10:30:00Z"
+#         400:
+#           description: Bad request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Category name is required"
+#                   data:
+#                     example: null
+#         401:
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Unauthorized, please login first"
+#                   data:
+#                     example: null
+#         403:
+#           description: Forbidden
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Access forbidden"
+#                   data:
+#                     example: null
+
+#     get:
+#       tags:
+#         - "Categories"
+#       summary: Get all categories
+#       description: Retrieve all product categories
+#       responses:
+#         200:
+#           description: Categories retrieved successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Categories retrieved successfully"
+#                   data:
+#                     type: array
+#                     items:
+#                       type: object
+#                       properties:
+#                         id:
+#                           type: integer
+#                           example: 1
+#                         name:
+#                           type: string
+#                           example: "Fotografi"
+#                         createdAt:
+#                           type: string
+#                           format: date-time
+#                           example: "2024-03-24T10:30:00Z"
+
+#   /categories/{id}:
+#     get:
+#       tags:
+#         - "Categories"
+#       summary: Get category detail
+#       description: Get detail of a specific category
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Category ID
+#       responses:
+#         200:
+#           description: Category retrieved successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Category retrieved successfully"
+#                   data:
+#                     type: object
+#                     properties:
+#                       id:
+#                         type: integer
+#                         example: 1
+#                       name:
+#                         type: string
+#                         example: "Fotografi"
+#                       createdAt:
+#                         type: string
+#                         format: date-time
+#                         example: "2024-03-24T10:30:00Z"
+#         404:
+#           description: Category not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Category not found"
+#                   data:
+#                     example: null
+
+#     put:
+#       tags:
+#         - "Categories"
+#       summary: Update category
+#       description: Update an existing category (Admin only)
+#       security:
+#         - bearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Category ID
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 name:
+#                   type: string
+#                   example: "Fotografi Wedding"
+
+#       responses:
+#         200:
+#           description: Category updated successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Category updated successfully"
+#                   data:
+#                     type: object
+#                     properties:
+#                       id:
+#                         type: integer
+#                         example: 1
+#                       name:
+#                         type: string
+#                         example: "Fotografi Wedding"
+#                       createdAt:
+#                         type: string
+#                         format: date-time
+#                         example: "2024-03-24T10:30:00Z"
+#         400:
+#           description: Bad request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Category name cannot be empty"
+#                   data:
+#                     example: null
+#         401:
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Unauthorized, please login first"
+#                   data:
+#                     example: null
+#         403:
+#           description: Forbidden
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Access forbidden"
+#                   data:
+#                     example: null
+#         404:
+#           description: Category not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Category not found"
+#                   data:
+#                     example: null
+
+#     delete:
+#       tags:
+#         - "Categories"
+#       summary: Delete category
+#       description: Delete a category (Admin only)
+#       security:
+#         - bearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Category ID
+#       responses:
+#         200:
+#           description: Category deleted successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Category deleted successfully"
+#                   data:
+#                     example: null
+#         400:
+#           description: Bad request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Cannot delete category with associated products"
+#                   data:
+#                     example: null
+#         401:
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Unauthorized, please login first"
+#                   data:
+#                     example: null
+#         403:
+#           description: Forbidden
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Access forbidden"
+#                   data:
+#                     example: null
+#         404:
+#           description: Category not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Category not found"
+#                   data:
+#                     example: null
+
+#   /product:
+#     post:
+#       tags:
+#         - Product
+#       summary: Create new product
+#       security:
+#         - BearerAuth: []
+#       requestBody:
+#         $ref: '#/components/requestBodies/CreateProduct'
+#       responses:
+#         '201':
+#           description: Product created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Product created successfully"
+#                   data:
+#                     $ref: '#/components/schemas/Product'
+#         '400':
+#           description: Bad Request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Name product must be required"
+#                   data:
+#                     example: null
+                    
+#     get:
+#       tags:
+#         - Product
+#       summary: Get all products
+#       responses:
+#         '200':
+#           description: Get all products success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get all products success"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/Product'
+
+#   /product/{id}:
+#     get:
+#       tags:
+#         - Product
+#       summary: Get product detail
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       responses:
+#         '200':
+#           description: Get product detail success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get product detail success"
+#                   data:
+#                     allOf:
+#                       - $ref: '#/components/schemas/Product'
+#                       - type: object
+#                         properties:
+#                           portfolios:
+#                             type: array
+#                             items:
+#                               type: object
+#                           reviews:
+#                             type: array
+#                             items:
+#                               type: object
+#                           averageRating:
+#                             type: number
+#                           totalOrders:
+#                             type: integer
+#                           totalReviews:
+#                             type: integer
+#         '404':
+#           description: Not Found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Product not found"
+#                   data:
+#                    example: null
+
+#     put:
+#       tags:
+#         - Product
+#       summary: Update product
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       requestBody:
+#         $ref: '#/components/requestBodies/UpdateProduct'
+#       responses:
+#         '200':
+#           description: Product updated successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Product updated successfully"
+#                   data:
+#                     $ref: '#/components/schemas/Product'
+#         '404':
+#           description: Not Found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Product not found"
+#                   data:
+#                     example: null
+
+#     delete:
+#       tags:
+#         - Product
+#       summary: Delete product
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       responses:
+#         '200':
+#           description: Product deleted successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Product deleted successfully"
+#                   data:
+#                     example: null
+#         '404':
+#           description: Not Found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Product not found"
+#                   data:
+#                     example: null
+
+#   /portfolio:
+#     post:
+#       tags:
+#         - Portfolio
+#       summary: Create new portfolio with multiple media
+#       security:
+#         - BearerAuth: []
+#       requestBody:
+#         required: true
+#         content:
+#           multipart/form-data:
+#             schema:
+#               type: object
+#               required:
+#                 - title
+#                 - description
+#                 - product_id
+#                 - media
+#               properties:
+#                 title:
+#                   type: string
+#                   example: "Wedding Documentation"
+#                 description:
+#                   type: string
+#                   example: "Beautiful wedding moments"
+#                 product_id:
+#                   type: integer
+#                   example: 1
+#                 media:
+#                   type: array
+#                   items:
+#                     type: string
+#                     format: binary
+#                   description: "Maximum 10 files (images/videos). Supported formats: PNG, JPG, JPEG, WEBP, MP4, MPEG, MOV. Max size: 10MB per file"
+#       responses:
+#         '201':
+#           description: Portfolio created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Portfolio created successfully"
+#                   data:
+#                     $ref: '#/components/schemas/Portfolio'
+#         '400':
+#           description: Bad Request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Title is required"
+#                   data:
+#                     example: null
+
+#     get:
+#       tags:
+#         - Portfolio
+#       summary: Get all portfolios
+#       responses:
+#         '200':
+#           description: Get all portfolios success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get all portfolios success"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/Portfolio'
+
+#   /portfolio/{id}:
+#     get:
+#       tags:
+#         - Portfolio
+#       summary: Get portfolio detail
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       responses:
+#         '200':
+#           description: Get portfolio detail success
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get portfolio detail success"
+#                   data:
+#                     $ref: '#/components/schemas/Portfolio'
+#         '404':
+#           description: Not Found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Portfolio not found"
+#                   data:
+#                     example: null
+
+#     put:
+#       tags:
+#         - Portfolio
+#       summary: Update portfolio
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       requestBody:
+#         content:
+#           multipart/form-data:
+#             schema:
+#               type: object
+#               properties:
+#                 title:
+#                   type: string
+#                   example: "Updated Wedding Documentation"
+#                 description:
+#                   type: string
+#                   example: "Updated wedding moments"
+#                 product_id:
+#                   type: integer
+#                   example: 1
+#                 media:
+#                   type: array
+#                   items:
+#                     type: string
+#                     format: binary
+#                   description: "Maximum 10 files (images/videos). Supported formats: PNG, JPG, JPEG, WEBP, MP4, MPEG, MOV. Max size: 10MB per file"
+#       responses:
+#         '200':
+#           description: Portfolio updated successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Portfolio updated successfully"
+#                   data:
+#                     $ref: '#/components/schemas/Portfolio'
+#         '400':
+#           description: Bad Request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Only image and video files are allowed to upload!"
+#                   data:
+#                     example: null
+#         '404':
+#           description: Not Found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Portfolio not found"
+#                   data:
+#                     example: null
+
+#     delete:
+#       tags:
+#         - Portfolio
+#       summary: Delete portfolio
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       responses:
+#         '200':
+#           description: Portfolio deleted successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Portfolio deleted successfully"
+#                   data:
+#                     example: null
+#         '404':
+#           description: Not Found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Portfolio not found"
+#                   data:
+#                     example: null
+                
+#   /order/{productId}:
+#     post:
+#       tags:
+#         - Orders
+#       summary: Create new order
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: productId
+#           required: true
+#           schema:
+#             type: integer
+#           description: ID of the product to order
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 date:
+#                   type: string
+#                   format: date
+#                   example: "2025-03-20"
+#                 time:
+#                   type: string
+#                   example: "16.20"
+#                 location:
+#                   type: string
+#                   example: "Surabaya"
+#                 quantity:
+#                   type: integer
+#                   minimum: 1
+#                   example: 1
+#                 note:
+#                   type: string
+#                   example: "Special request"
+#                   description: Optional
+#       responses:
+#         201:
+#           description: Order created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/OrderResponse'
+
+#   /orders:
+#     get:
+#       tags:
+#         - Orders
+#       summary: Get all orders
+#       security:
+#         - BearerAuth: []
+#       responses:
+#         200:
+#           description: List of all orders
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get all orders success"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/OrderResponse'
+
+#   /order/{id}:
+#     get:
+#       tags:
+#         - Orders
+#       summary: Get order detail
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Order ID
+#       responses:
+#         200:
+#           description: Order detail
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get order detail success"
+#                   data:
+#                     $ref: '#/components/schemas/OrderResponse'
+                
+#   /QR:
+#     post:
+#       tags:
+#         - Orders
+#       summary: Generate QR code for order
+#       security:
+#         - BearerAuth: []
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 qr_data:
+#                   type: string
+#                   example: "Qr untuk Qris"
+#       responses:
+#         200:
+#           description: QR code generated successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "QR code generated successfully"
+#                   data:
+#                     type: string
+#                     example: "https://ik.imagekit.io/cahayakreativ/Sun_Mar_16_2025_08_36_51_GMT_0700__Indochina_Time__MCN0yT3Ge.png"
+
+#   /payments:
+#     get:
+#       tags:
+#         - Payments
+#       summary: Get all payments
+#       security:
+#         - BearerAuth: []
+#       responses:
+#         '200':
+#           description: Success get all payments
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: Get all payments success
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/PaymentWithOrder'
+
+#   /payment/{id}:
+#     get:
+#       tags:
+#         - Payments
+#       summary: Get payment detail
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Payment ID
+#       responses:
+#         '200':
+#           description: Success get payment detail
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: Get payment detail success
+#                   data:
+#                     $ref: '#/components/schemas/PaymentDetail'
+#         '404':
+#           description: Payment not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: Payment not found
+#                   data:
+#                     example: null
+
+#   /payment/midtrans/{orderId}:
+#     post:
+#       tags:
+#         - Payments
+#       summary: Create Midtrans payment
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: orderId
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Order ID
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 method_payment:
+#                   type: string
+#                   example: "credit_card"
+#       responses:
+#         '200':
+#           description: Success create Midtrans payment
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: Midtrans payment initiated successfully
+#                   data:
+#                     type: object
+#                     properties:
+#                       token:
+#                         type: string
+#                       redirect_url:
+#                         type: string
+
+#   /notifications:
+#     post:
+#       summary: Create notification by Mitra
+#       tags:
+#         - "Notifications"
+#       security:
+#         - BearerAuth: []
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               required:
+#                 - title
+#                 - message
+#               properties:
+#                 title:
+#                   type: string
+#                   example: "Jadwal Pemotretan"
+#                 message:
+#                   type: string
+#                   example: "Jadwal pemotretan Anda telah dikonfirmasi untuk tanggal 20 Maret 2025"
+#       responses:
+#         201:
+#           description: Notification created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Notification created successfully"
+#                   data:
+#                     type: object
+#                     properties:
+#                       id:
+#                         type: integer
+#                         example: 1
+#                       title:
+#                         type: string
+#                         example: "Jadwal Pemotretan"
+#                       message:
+#                         type: string
+#                         example: "Jadwal pemotretan Anda telah dikonfirmasi untuk tanggal 20 Maret 2025"
+#                       isRead:
+#                         type: boolean
+#                         example: false
+#                       user_id:
+#                         type: integer
+#                         example: 1
+#                       createdAt:
+#                         type: string
+#                         format: date-time
+#                         example: "2025-03-13T23:18:50.800Z"
+#         400:
+#           description: Bad request - Invalid input
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "All fields are required (title, message)"
+#                   data:
+#                     example: null
+#         401:
+#           description: Unauthorized - Token not provided or invalid
+#         403:
+#           description: Forbidden - Not a Mitra
+
+#     get:
+#       tags:
+#         - "Notifications"
+#       summary: Get user notifications
+#       description: Get paginated list of notifications for authenticated user
+#       parameters:
+#         - in: query
+#           name: page
+#           schema:
+#             type: integer
+#             default: 1
+#           description: Page number for pagination
+#         - in: query
+#           name: find
+#           schema:
+#             type: string
+#           description: Search notifications by title (case insensitive)
+#         - in: query
+#           name: filter
+#           schema:
+#             type: string
+#           description: Filter notifications by exact title (case insensitive)
+#       security:
+#         - bearerAuth: []
+#       responses:
+#         200:
+#           description: Successfully retrieved notifications
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Notifications retrieved successfully"
+#                   data:
+#                     type: object
+#                     properties:
+#                       notifications:
+#                         type: array
+#                         items:
+#                           $ref: "#/components/schemas/NotificationResponse"
+#                       pagination:
+#                         type: object
+#                         properties:
+#                           page:
+#                             type: integer
+#                             example: 1
+#                           per_page:
+#                             type: integer
+#                             example: 10
+#                           pageCount:
+#                             type: integer
+#                             example: 5
+#                           total_items:
+#                             type: integer
+#                             example: 50
+#                           total_pages:
+#                             type: integer
+#                             example: 5
+
+#   /notifications/markAsRead/all:
+#     put:
+#       tags:
+#         - "Notifications"
+#       summary: Mark all notifications as read
+#       description: Mark all user's notifications as read
+#       security:
+#         - bearerAuth: []
+#       responses:
+#         200:
+#           description: Successfully marked all notifications as read
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "All Notifications marked as read"
+#                   data:
+#                     type: object
+#                     properties:
+#                       count:
+#                         type: integer
+#                         example: 5
+
+#   /notification/markAsRead/{notificationId}:
+#     put:
+#       tags:
+#         - "Notifications"
+#       summary: Mark specific notification as read
+#       description: Mark a specific notification as read by ID
+#       parameters:
+#         - in: path
+#           name: notificationId
+#           required: true
+#           schema:
+#             type: integer
+#           description: ID of notification to mark as read
+#       security:
+#         - bearerAuth: []
+#       responses:
+#         200:
+#           description: Successfully marked notification as read
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Notification marked as read"
+#                   data:
+#                     $ref: "#/components/schemas/NotificationResponse"
+#         400:
+#           description: Invalid notification ID
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Invalid Notification ID"
+#                   data:
+#                     example: null
+#         404:
+#           description: Notification not found
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Notification not found"
+#                   data:                   
+#                     example: null
+
+#   /reviews/{orderId}:
+#     post:
+#       tags:
+#         - Reviews
+#       summary: Create a new review
+#       description: Create review for completed order (status done)
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: orderId
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Order ID
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               required:
+#                 - rating
+#                 - comment
+#               properties:
+#                 rating:
+#                   type: integer
+#                   minimum: 1
+#                   maximum: 5
+#                   example: 5
+#                   description: Rating value between 1-5
+#                 comment:
+#                   type: string
+#                   example: "Great service and amazing results!"
+#                   description: Review comment
+#       responses:
+#         '201':
+#           description: Review created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Review created successfully"
+#                   data:
+#                     $ref: '#/components/schemas/ReviewDetail'
+#         '400':
+#           description: Bad request
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: false
+#                   message:
+#                     type: string
+#                     example: "Rating must be between 1 and 5"
+#                   data:
+#                     example: null
+
+#   /reviews/products/{productId}:
+#     get:
+#       tags:
+#         - Reviews
+#       summary: Get all reviews for a product
+#       parameters:
+#         - name: productId
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Product ID
+#       responses:
+#         '200':
+#           description: Success get product reviews
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get product reviews success"
+#                   data:
+#                     type: object
+#                     properties:
+#                       averageRating:
+#                         type: number
+#                         format: float
+#                         example: 4.5
+#                       totalReviews:
+#                         type: integer
+#                         example: 10
+#                       reviews:
+#                         type: array
+#                         items:
+#                           $ref: '#/components/schemas/ReviewWithUser'
+
+#   /user/reviews:
+#     get:
+#       tags:
+#         - Reviews
+#       summary: Get all reviews by logged in user
+#       security:
+#         - BearerAuth: []
+#       responses:
+#         '200':
+#           description: Success get user reviews
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get user reviews success"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/ReviewWithProduct'
+
+#   /reviews/{id}:
+#     put:
+#       tags:
+#         - Reviews
+#       summary: Update existing review
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#           description: Review ID
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 rating:
+#                   type: integer
+#                   minimum: 1
+#                   maximum: 5
+#                   example: 4
+#                 comment:
+#                   type: string
+#                   example: "Updated review comment"
+#       responses:
+#         '200':
+#           description: Review updated successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Review updated successfully"
+#                   data:
+#                     $ref: '#/components/schemas/ReviewDetail'
+
+#   /schedule:
+#     post:
+#       summary: Create new schedule
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 date:
+#                   type: string
+#                   format: date
+#                   example: "2025-03-20"
+#                 time:
+#                   type: string
+#                   example: "16.10"
+#                 location:
+#                   type: string
+#                   example: "Surabaya"
+#                 duration:
+#                   type: integer
+#                   example: 2
+#       responses:
+#         201:
+#           description: Schedule created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Schedule created successfully"
+#                   data:
+#                     $ref: '#/components/schemas/Schedule'
+#         400:
+#           description: Bad request
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a Mitra
+
+#     get:
+#       summary: Get all schedules
+#       tags: [Schedule]
+#       responses:
+#         200:
+#           description: List of all schedules
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get all schedules success"
+#                   data:
+#                     type: array
+#                     items:
+#                       type: object
+#                       properties:
+#                         id:
+#                           type: integer
+#                           example: 2
+#                         date:
+#                           type: string
+#                           example: "2025-03-20"
+#                         time:
+#                           type: string
+#                           example: "16.10"
+#                         location:
+#                           type: string
+#                           example: "Surabaya"
+#                         isBooked:
+#                           type: boolean
+#                           example: true
+#                         duration:
+#                           type: integer
+#                           example: 2
+#                         createdAt:
+#                           type: string
+#                           format: date-time
+#                           example: "2025-03-13T23:18:50.800Z"
+#                         orders:
+#                           type: array
+#                           items:
+#                             type: object
+
+#   /schedule/{id}:
+#     get:
+#       summary: Get schedule by ID
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Schedule ID
+#       responses:
+#         200:
+#           description: Schedule detail
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Get schedule detail success"
+#                   data:
+#                     type: object
+#                     properties:
+#                       id:
+#                         type: integer
+#                         example: 2
+#                       date:
+#                         type: string
+#                         example: "2025-03-20"
+#                       time:
+#                         type: string
+#                         example: "16.10"
+#                       location:
+#                         type: string
+#                         example: "Surabaya"
+#                       isBooked:
+#                         type: boolean
+#                         example: true
+#                       duration:
+#                         type: integer
+#                         example: 2
+#                       createdAt:
+#                         type: string
+#                         format: date-time
+#                         example: "2025-03-13T23:18:50.800Z"
+#         404:
+#           description: Schedule not found
+
+#     put:
+#       summary: Update schedule
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Schedule ID
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 date:
+#                   type: string
+#                   format: date
+#                   example: "2025-03-20"
+#                 time:
+#                   type: string
+#                   example: "16.10"
+#                 location:
+#                   type: string
+#                   example: "Surabaya"
+#                 duration:
+#                   type: integer
+#                   example: 2
+#                 isBooked:
+#                   type: boolean
+#                   example: false
+#       responses:
+#         200:
+#           description: Schedule updated successfully
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/Schedule'
+#         400:
+#           description: Bad request
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a Mitra
+#         404:
+#           description: Schedule not found
+
+#     delete:
+#       summary: Delete schedule
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Schedule ID
+#       responses:
+#         200:
+#           description: Schedule deleted successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Schedule deleted successfully"
+#                   data:
+#                     example: null
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a Mitra
+#         404:
+#           description: Schedule not found
+
+#   /order/done/{id}:
+#     put:
+#       summary: Update status order
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Order ID
+#       responses:
+#         200:
+#           description: Update status order successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Order marked as done successfully"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/StatusResponse'
+#         400:
+#           description: Bad request
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a Mitra
+#         404:
+#           description: Order not found
+
+
+#   /order/cancel/{id}:
+#     put:
+#       summary: Update status order
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Order ID
+#       responses:
+#         200:
+#           description: Update status order successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Order has been cancelled"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/StatusResponse'
+#         400:
+#           description: Bad request
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a Mitra
+#         404:
+#           description: Order not found
+
+#   /order/validate/{id}:
+#     put:
+#       summary: Update status order
+#       tags: [Schedule]
+#       security:
+#         - BearerAuth: []
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: Order ID
+#       responses:
+#         200:
+#           description: Update status order successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Order status updated to unpaid"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/StatusResponse'
+#         400:
+#           description: Bad request
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a Mitra
+#         404:
+#           description: Order not found
+
+#   /order/discount:
+#     put:
+#       summary: Get Discount
+#       tags: [Orders]
+#       security:
+#         - BearerAuth: []
+#       responses:
+#         200:
+#           description: Get Discount order successfully
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   status:
+#                     type: boolean
+#                     example: true
+#                   message:
+#                     type: string
+#                     example: "Order status updated to unpaid"
+#                   data:
+#                     type: array
+#                     items:
+#                       $ref: '#/components/schemas/OrderResponse'
+#         400:
+#           description: Invalid discount code
+#         401:
+#           description: Unauthorized
+#         403:
+#           description: Forbidden - Not a User
+#         404:
+#           description: Invalid discount code
+
+# components:
+#   securitySchemes:
+#     bearerAuth:
+#       type: http
+#       scheme: bearer
+#       bearerFormat: JWT
+#     google_oauth:
+#       type: oauth2
+#       description: Google OAuth
+#       flows:
+#         authorizationCode:
+#           authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+#           tokenUrl: https://www.googleapis.com/oauth2/v4/token
+#           scopes:
+#             profile: View your basic profile info
+#             email: View your email address
+#   schemas:
+#     UserResponse:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         fullname:
+#           type: string
+#           example: Bagus Dwi
+#         email:
+#           type: string
+#           example: sugab.dwi88@gmail.com
+#         phoneNumber:
+#           type: string
+#           example: "08123456789"
+#         otp:
+#           type: string
+#           example: 123456
+#         otpCreatedAt:
+#           type: string
+#           example: 2024-06-30T16:03:46.444Z
+#         google_id:
+#           type: string
+#           example: ~
+#         isVerified:
+#           type: boolean
+#           example: false
+#         role:
+#           type: string
+#           example: user
+        
+#     UserWithProfileResponse:
+#       allOf:
+#         - $ref: "#/components/schemas/UserResponse"
+#         - type: object
+#           properties:
+#             profile:
+#               type: object
+#               properties:
+#                 id:
+#                   type: integer
+#                   example: 1
+#                 avatar_url:
+#                   type: string
+#                   nullable: true
+#                   example: null
+#                 birth_date:
+#                   type: string
+#                   format: date
+#                   nullable: true
+#                   example: null
+#                 address:
+#                   type: string
+#                   example: ""
+#                 city:
+#                   type: string
+#                   example: ""
+#                 province:
+#                   type: string
+#                   example: ""
+#                 postal_code:
+#                   type: string
+#                   example: ""
+
+#     Product:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#         name:
+#           type: string
+#         description:
+#           type: string
+#         detail:
+#           type: string
+#         image:
+#           type: string
+#         isAvailable:
+#           type: boolean
+#         price:
+#           type: integer
+#         duration:
+#           type: integer
+#         createdAt:
+#           type: string
+#           format: date-time
+#         category_id:
+#           type: integer
+
+#     Portfolio:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         title:
+#           type: string
+#           example: "Wedding Documentation"
+#         description:
+#           type: string
+#           example: "Beautiful wedding moments"
+#         product_id:
+#           type: integer
+#           example: 1
+#         createdAt:
+#           type: string
+#           format: date-time
+#           example: "2024-01-20T07:00:00.000Z"
+#         product:
+#           type: object
+#           properties:
+#             id:
+#               type: integer
+#               example: 1
+#             name:
+#               type: string
+#               example: "Wedding Package"
+#         media:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               id:
+#                 type: integer
+#                 example: 1
+#               url:
+#                 type: string
+#                 example: "https://ik.imagekit.io/demo/portfolio/images/image1.jpg"
+#               type:
+#                 type: string
+#                 enum: [IMAGE, VIDEO]
+#                 example: "IMAGE"
+#               createdAt:
+#                 type: string
+#                 format: date-time
+#                 example: "2024-01-20T07:00:00.000Z"
+
+#     OrderResponse:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         code:
+#           type: string
+#           example: "MEePuhpL"
+#         status:
+#           type: string
+#           enum: [pending, paid, process, done, cancel]
+#           example: "pending"
+#         note:
+#           type: string
+#           nullable: true
+#           example: "Special request"
+#         total_amount:
+#           type: number
+#           format: decimal
+#           example: 300000.00
+#         createdAt:
+#           type: string
+#           format: date-time
+#           example: "2025-03-16T00:50:03.099Z"
+#         expired_paid:
+#           type: string
+#           format: date-time
+#           example: "2025-03-16T08:50:02.977Z"
+#         user_id:
+#           type: integer
+#           example: 2
+#         schedule_id:
+#           type: integer
+#           example: 9
+#         schedule:
+#           type: object
+#           properties:
+#             id:
+#               type: integer
+#               example: 9
+#             date:
+#               type: string
+#               format: date
+#               example: "2025-03-20"
+#             time:
+#               type: string
+#               example: "16.20"
+#             endTime:
+#               type: string
+#               example: "18.20"
+#             location:
+#               type: string
+#               example: "Surabaya"
+#             duration:
+#               type: integer
+#               example: 2
+#             isBooked:
+#               type: boolean
+#               example: true
+#             createdAt:
+#               type: string
+#               format: date-time
+#               example: "2025-03-16T00:50:03.038Z"
+#         orderDetails:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               id:
+#                 type: integer
+#                 example: 1
+#               order_id:
+#                 type: integer
+#                 example: 1
+#               product_id:
+#                 type: integer
+#                 example: 1
+#               quantity:
+#                 type: integer
+#                 example: 1
+#               price:
+#                 type: number
+#                 format: decimal
+#                 example: 300000.00
+#               subtotal:
+#                 type: number
+#                 format: decimal
+#                 example: 300000.00
+#               product:
+#                 type: object
+#                 properties:
+#                   id:
+#                     type: integer
+#                     example: 1
+#                   name:
+#                     type: string
+#                     example: "Paket Wedding"
+#                   description:
+#                     type: string
+#                     example: "Paket fotografi untuk wedding"
+#                   detail:
+#                     type: string
+#                     example: "Paket ini berisi pemotretan selama 2 jam"
+#                   image:
+#                     type: string
+#                     example: "https://example.com/image.jpg"
+#                   isAvailable:
+#                     type: boolean
+#                     example: true
+#                   price:
+#                     type: number
+#                     format: decimal
+#                     example: 300000.00
+#                   duration:
+#                     type: integer
+#                     example: 2
+#                   createdAt:
+#                     type: string
+#                     format: date-time
+#                     example: "2025-03-16T00:08:12.866Z"
+#                   category_id:
+#                     type: integer
+#                     example: 1
+
+#     StatusResponse:
+#       properties:
+#         orderDetails:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               id:
+#                 type: integer
+#                 example: 1
+#               order_id:
+#                 type: integer
+#                 example: 1
+#               product_id:
+#                 type: integer
+#                 example: 1
+#               quantity:
+#                 type: integer
+#                 example: 1
+#               price:
+#                 type: number
+#                 format: decimal
+#                 example: 300000.00
+#               subtotal:
+#                 type: number
+#                 format: decimal
+#                 example: 300000.00
+#               product:
+#                 type: object
+#                 properties:
+#                   id:
+#                     type: integer
+#                     example: 1
+#                   name:
+#                     type: string
+#                     example: "Paket Wedding"
+#                   description:
+#                     type: string
+#                     example: "Paket fotografi untuk wedding"
+#                   detail:
+#                     type: string
+#                     example: "Paket ini berisi pemotretan selama 2 jam"
+#                   image:
+#                     type: string
+#                     example: "https://example.com/image.jpg"
+#                   isAvailable:
+#                     type: boolean
+#                     example: true
+#                   price:
+#                     type: number
+#                     format: decimal
+#                     example: 300000.00
+#                   duration:
+#                     type: integer
+#                     example: 2
+#                   createdAt:
+#                     type: string
+#                     format: date-time
+#                     example: "2025-03-16T00:08:12.866Z"
+#                   category_id:
+#                     type: integer
+#                     example: 1
+
+#     PaymentWithOrder:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         amount:
+#           type: string
+#           example: "300000"
+#         method_payment:
+#           type: string
+#           example: "credit_card"
+#         status:
+#           type: string
+#           enum: [unpaid, paid, cancelled]
+#         createdAt:
+#           type: string
+#           example: "2024-03-16 14:30:00"
+#         order:
+#           type: object
+#           properties:
+#             id:
+#               type: integer
+#             code:
+#               type: string
+#             status:
+#               type: string
+#               enum: [pending, paid, process, done, cancel]
+#             total_amount:
+#               type: string
+#             createdAt:
+#               type: string
+#             expired_paid:
+#               type: string
+#             user:
+#               type: object
+#               properties:
+#                 id:
+#                   type: integer
+#                 fullname:
+#                   type: string
+#                 email:
+#                   type: string
+#                 phoneNumber:
+#                   type: string
+
+#     PaymentDetail:
+#       allOf:
+#         - $ref: '#/components/schemas/PaymentWithOrder'
+#         - type: object
+#           properties:
+#             order:
+#               type: object
+#               properties:
+#                 schedule:
+#                   type: object
+#                   properties:
+#                     id:
+#                       type: integer
+#                     date:
+#                       type: string
+#                       example: "2024-03-20"
+#                     time:
+#                       type: string
+#                       example: "14:00"
+#                     endTime:
+#                       type: string
+#                       example: "16:00"
+#                     location:
+#                       type: string
+#                     duration:
+#                       type: integer
+
+#     NotificationResponse:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         title:
+#           type: string
+#           example: "Password Update"
+#         message:
+#           type: string
+#           example: "Your password has been updated successfully!"
+#         isRead:
+#           type: boolean
+#           example: false
+#         createdAt:
+#           type: string
+#           format: date-time
+#           example: "2024-03-24T10:30:00Z"
+#         user_id:
+#           type: integer
+#           example: 1
+
+#     Schedule:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#         date:
+#           type: string
+#           format: date
+#         time:
+#           type: string
+#           example: "16.20"
+#         endTime:
+#           type: string
+#           example: "18.20"
+#         location:
+#           type: string
+#           example: "Surabaya"
+#         isBooked:
+#           type: boolean
+#           example: true
+#         duration:
+#           type: integer
+#           example: 2
+#         createdAt:
+#           type: string
+#           format: date-time
+  
+#     ReviewBase:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         rating:
+#           type: integer
+#           example: 5
+#         comment:
+#           type: string
+#           example: "Great service!"
+#         createdAt:
+#           type: string
+#           example: "2024-03-16 14:30:00"
+#         order_id:
+#           type: integer
+#           example: 1
+#         product_id:
+#           type: integer
+#           example: 1
+
+#     ReviewWithUser:
+#       allOf:
+#         - $ref: '#/components/schemas/ReviewBase'
+#         - type: object
+#           properties:
+#             order:
+#               type: object
+#               properties:
+#                 user:
+#                   type: object
+#                   properties:
+#                     id:
+#                       type: integer
+#                       example: 1
+#                     fullname:
+#                       type: string
+#                       example: "John Doe"
+
+#     ReviewWithProduct:
+#       allOf:
+#         - $ref: '#/components/schemas/ReviewBase'
+#         - type: object
+#           properties:
+#             product:
+#               type: object
+#               properties:
+#                 id:
+#                   type: integer
+#                   example: 1
+#                 name:
+#                   type: string
+#                   example: "Wedding Photo Session"
+#                 image:
+#                   type: string
+#                   example: "https://example.com/image.jpg"
+
+#     ReviewDetail:
+#       allOf:
+#         - $ref: '#/components/schemas/ReviewBase'
+#         - type: object
+#           properties:
+#             order:
+#               type: object
+#               properties:
+#                 user:
+#                   type: object
+#                   properties:
+#                     id:
+#                       type: integer
+#                     fullname:
+#                       type: string
+#                 orderDetails:
+#                   type: array
+#                   items:
+#                     type: object
+#                     properties:
+#                       product:
+#                         type: object
+#                         properties:
+#                           id:
+#                             type: integer
+#                           name:
+#                             type: string
+#                           image:
+#                             type: string
+
+#   requestBodies:
+#     createUser:
+#       content:
+#         application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 fullname:
+#                   type: string
+#                   example: "Bagus Dwi"
+#                 email:
+#                   type: string
+#                   format: email
+#                   example: "sugab.dwi88@gmail.com"
+#                 phoneNumber:
+#                   type: string
+#                   example: "08123456789"
+#                 password:
+#                   type: string
+#                   example: "Password123."
+
+#     createLogin:
+#       content:
+#         application/json:
+#           schema:
+#             type: object
+#             properties:
+#               emailOrPhoneNumber:
+#                 type: string
+#                 example: sugab.dwi88@gmail.com
+#               password:
+#                 type: string
+#                 example: Password123.
+
+#     CreateProduct:
+#       required: true
+#       content:
+#         multipart/form-data:
+#           schema:
+#             type: object
+#             required:
+#               - name
+#               - description
+#               - detail
+#               - price
+#               - duration
+#               - category_id
+#               - image
+#             properties:
+#               name:
+#                 type: string
+#               description:
+#                 type: string
+#               detail:
+#                 type: string
+#               price:
+#                 type: integer
+#               duration:
+#                 type: integer
+#               category_id:
+#                 type: integer
+#               image:
+#                 type: string
+#                 format: binary
+
+#     UpdateProduct:
+#       content:
+#         multipart/form-data:
+#           schema:
+#             type: object
+#             properties:
+#               name:
+#                 type: string
+#               description:
+#                 type: string
+#               detail:
+#                 type: string
+#               price:
+#                 type: integer
+#               duration:
+#                 type: integer
+#               category_id:
+#                 type: integer
+#               isAvailable:
+#                 type: boolean
+#               image:
+#                 type: string
+#                 format: binary
