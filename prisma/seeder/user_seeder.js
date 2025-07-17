@@ -10,7 +10,7 @@ async function userAdmin(prisma) {
       update: {},
       create: {
         fullname: "Cahaya Kreativ",
-        email: "cahayakreativ8@gmail.com",
+        email: "cahayakreativ@gmail.com",
         phoneNumber: "08123456789",
         password: encryptedPassword,
         isVerified: true,
