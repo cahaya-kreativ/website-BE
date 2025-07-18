@@ -555,4 +555,142 @@ module.exports = {
       next(error);
     }
   },
+
+  editEmployee: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { fullname, email, phoneNumber } = req.body;
+      const emailValidator = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+      // Validasi ID
+      if (!id || isNaN(id)) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid Employee ID",
+          data: null,
+        });
+      }
+  
+      const employeeId = Number(id);
+  
+      // Cek apakah user dengan ID tersebut ada
+      const existingUser = await prisma.user.findUnique({
+        where: { id: employeeId },
+      });
+  
+      if (!existingUser) {
+        return res.status(404).json({
+          status: false,
+          message: "Employee not found",
+          data: null,
+        });
+      }
+  
+      // Validasi email jika dikirim dan berbeda dengan sebelumnya
+      if (email && email !== existingUser.email) {
+        const emailTaken = await prisma.user.findFirst({
+          where: {
+            email,
+            NOT: { id: employeeId }, // pastikan bukan milik user yang sedang diupdate
+          },
+        });
+  
+        if (emailTaken) {
+          return res.status(409).json({
+            status: false,
+            message: "Email already in use by another employee",
+            data: null,
+          });
+        }
+      }
+
+      // Validate phone number format
+      if (phoneNumber && !/^\d+$/.test(phoneNumber)) {
+        return res.status(400).json({
+          status: false,
+          message:
+            "Invalid phone number format. It must contain only numeric characters.",
+          data: null,
+        });
+      }
+
+      if (!emailValidator.test(email)) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid email format.",
+          data: null,
+        });
+      }
+  
+      // Bangun objek update
+      const updatedData = {};
+      if (fullname !== undefined) updatedData.fullname = fullname;
+      if (email !== undefined) updatedData.email = email;
+      if (phoneNumber !== undefined) updatedData.phoneNumber = phoneNumber;
+  
+      // Cek apakah ada data yang dikirim
+      if (Object.keys(updatedData).length === 0) {
+        return res.status(400).json({
+          status: false,
+          message: "No data provided for update",
+          data: null,
+        });
+      }
+  
+      // Update user
+      const updatedUser = await prisma.user.update({
+        where: { id: employeeId },
+        data: updatedData,
+      });
+  
+      return res.status(200).json({
+        status: true,
+        message: "Employee updated successfully",
+        data: updatedUser,
+      });
+  
+    } catch (error) {
+      next(error);
+    }
+  },  
+
+  deleteEmployee: async (req, res, next) => {
+    try {
+      const { id } = req.params; // Ambil ID dari parameter
+
+      // Validasi ID
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid Employee ID",
+        data: null,
+      });
+    }
+
+    // Cek apakah user dengan ID tersebut ada
+    const existingUser = await prisma.user.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({
+        status: false,
+        message: "Employee Not Found",
+        data: null,
+      });
+    }
+
+    // Hapus user
+    await prisma.user.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.status(200).json({
+      status: true,
+      message: "Deleted Employee Successfully",
+    });
+    } catch (error) {
+      next(error)
+    }
+  },
 };

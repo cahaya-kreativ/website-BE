@@ -11,6 +11,8 @@ const {
   addEmployee,
   updatePassword,
   getAllEmployee,
+  editEmployee,
+  deleteEmployee,
 } = require("../controllers/admin.controllers");
 const { restrict } = require("../middlewares/auth.middlewares");
 
@@ -26,5 +28,7 @@ router.get("/data/product", restrict, getCategoriesWithCounts);
 router.get("/all/orders", restrict, getAllOrders);
 router.get("/all/users", restrict, getAllUsers);
 router.get("/all/employees", restrict, getAllEmployee);
+router.put("/edit/employee/:id", restrict, editEmployee);
+router.delete("/delete/employee/:id", restrict, deleteEmployee);
 
 module.exports = router;
