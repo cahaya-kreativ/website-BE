@@ -83,6 +83,7 @@ module.exports = {
 
       // Hitung subtotal & totalAmount
       const subtotal = parseInt(product.price) * quantity;
+      let taxAmount = 0.02;
 
       let discountAmount = 0;
       if (discountCode) {
@@ -100,7 +101,7 @@ module.exports = {
         }
         discountAmount = (subtotal * discount.percentage) / 100;
       }
-
+      subtotal = subtotal * taxAmount;
       const totalAmount = subtotal - discountAmount;
 
       // Validasi jadwal (opsional, bisa dipakai seperti sebelumnya)
@@ -180,7 +181,8 @@ module.exports = {
                 product_id: Number(productId),
                 quantity: Number(quantity),
                 price: product.price,
-                subtotal,
+                tax: taxAmount,
+                subtotal: product.price / 0.98,
                 discount: discountAmount,
               },
             },
@@ -233,6 +235,7 @@ module.exports = {
         data: {
           order: result,
           discountAmount,
+          taxAmount,
           totalAmount,
         },
       });
