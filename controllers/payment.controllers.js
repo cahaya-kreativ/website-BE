@@ -2,22 +2,20 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const midtransClient = require("midtrans-client");
 const {
-  // PAYMENT_DEV_CLIENT_KEY,
-  // PAYMENT_DEV_SERVER_KEY,
+  PAYMENT_DEV_CLIENT_KEY,
+  PAYMENT_DEV_SERVER_KEY,
   PAYMENT_PROD_CLIENT_KEY,
   PAYMENT_PROD_SERVER_KEY,
 } = process.env;
 const { utcTimePlus7, formatDateTimeWIB } = require("../utils/formattedDate");
 
 // Setup Midtrans client
-const isProduction = false;
+const isProduction = true;
 
 let snap = new midtransClient.Snap({
-  // isProduction: isProduction,
-  // serverKey: isProduction ? PAYMENT_PROD_SERVER_KEY : PAYMENT_DEV_SERVER_KEY,
-  // clientKey: isProduction ? PAYMENT_PROD_CLIENT_KEY : PAYMENT_DEV_CLIENT_KEY,
-  serverKey: PAYMENT_PROD_SERVER_KEY,
-  clientKey: PAYMENT_PROD_CLIENT_KEY,
+  isProduction: isProduction,
+  serverKey: isProduction ? PAYMENT_PROD_SERVER_KEY : PAYMENT_DEV_SERVER_KEY,
+  clientKey: isProduction ? PAYMENT_PROD_CLIENT_KEY : PAYMENT_DEV_CLIENT_KEY,
 });
 
 module.exports = {
