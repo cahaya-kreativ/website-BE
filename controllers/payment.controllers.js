@@ -10,7 +10,7 @@ const {
 const { utcTimePlus7, formatDateTimeWIB } = require("../utils/formattedDate");
 
 // Setup Midtrans client
-const isProduction = true;
+const isProduction = false;
 
 let snap = new midtransClient.Snap({
   isProduction: isProduction,
