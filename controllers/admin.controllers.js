@@ -29,11 +29,12 @@ module.exports = {
         });
       }
 
-      // Check if the user is an admin
-      if (user.role !== "admin" && user.role !== "employee") {
+      // Allow only admin, employee, and superAdmin roles
+      if (!["admin", "employee", "superAdmin"].includes(user.role)) {
         return res.status(403).json({
           status: false,
-          message: "Access denied. Only admins and employee can log in.",
+          message:
+            "Access denied. Only admins, employees, and super admins can log in.",
           data: null,
         });
       }
