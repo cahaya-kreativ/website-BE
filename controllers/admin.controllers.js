@@ -86,7 +86,7 @@ module.exports = {
 
   addEmployee: async (req, res, next) => {
     try {
-      const { fullname, email, phoneNumber, password } = req.body;
+      const { fullname, email, phoneNumber, password, role } = req.body;
 
       const passwordValidator =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*.])[A-Za-z\d!@#$%^&*.]{8,50}$/;
@@ -172,6 +172,15 @@ module.exports = {
         });
       }
 
+      // Validasi role (harus "admin" atau "employee")
+      if (!role || ![Role.admin, Role.employee].includes(role)) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid role. Must be either 'admin' or 'employee'.",
+          data: null,
+        });
+      }
+
       // Enkripsi password
       const encryptedPassword = await bcrypt.hash(password, 10);
 
@@ -183,7 +192,7 @@ module.exports = {
           phoneNumber,
           password: encryptedPassword,
           isVerified: true,
-          role: Role.employee,
+          role,
         },
       });
       delete addEmployee.password;
@@ -561,7 +570,7 @@ module.exports = {
       const { id } = req.params;
       const { fullname, email, phoneNumber } = req.body;
       const emailValidator = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
       // Validasi ID
       if (!id || isNaN(id)) {
         return res.status(400).json({
@@ -570,14 +579,14 @@ module.exports = {
           data: null,
         });
       }
-  
+
       const employeeId = Number(id);
-  
+
       // Cek apakah user dengan ID tersebut ada
       const existingUser = await prisma.user.findUnique({
         where: { id: employeeId },
       });
-  
+
       if (!existingUser) {
         return res.status(404).json({
           status: false,
@@ -585,7 +594,7 @@ module.exports = {
           data: null,
         });
       }
-  
+
       // Validasi email jika dikirim dan berbeda dengan sebelumnya
       if (email && email !== existingUser.email) {
         const emailTaken = await prisma.user.findFirst({
@@ -594,7 +603,7 @@ module.exports = {
             NOT: { id: employeeId }, // pastikan bukan milik user yang sedang diupdate
           },
         });
-  
+
         if (emailTaken) {
           return res.status(409).json({
             status: false,
@@ -621,13 +630,13 @@ module.exports = {
           data: null,
         });
       }
-  
+
       // Bangun objek update
       const updatedData = {};
       if (fullname !== undefined) updatedData.fullname = fullname;
       if (email !== undefined) updatedData.email = email;
       if (phoneNumber !== undefined) updatedData.phoneNumber = phoneNumber;
-  
+
       // Cek apakah ada data yang dikirim
       if (Object.keys(updatedData).length === 0) {
         return res.status(400).json({
@@ -636,61 +645,60 @@ module.exports = {
           data: null,
         });
       }
-  
+
       // Update user
       const updatedUser = await prisma.user.update({
         where: { id: employeeId },
         data: updatedData,
       });
-  
+
       return res.status(200).json({
         status: true,
         message: "Employee updated successfully",
         data: updatedUser,
       });
-  
     } catch (error) {
       next(error);
     }
-  },  
+  },
 
   deleteEmployee: async (req, res, next) => {
     try {
       const { id } = req.params; // Ambil ID dari parameter
 
       // Validasi ID
-    if (!id || isNaN(id)) {
-      return res.status(400).json({
-        status: false,
-        message: "Invalid Employee ID",
-        data: null,
+      if (!id || isNaN(id)) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid Employee ID",
+          data: null,
+        });
+      }
+
+      // Cek apakah user dengan ID tersebut ada
+      const existingUser = await prisma.user.findUnique({
+        where: { id: Number(id) },
       });
-    }
 
-    // Cek apakah user dengan ID tersebut ada
-    const existingUser = await prisma.user.findUnique({
-      where: { id: Number(id) },
-    });
+      if (!existingUser) {
+        return res.status(404).json({
+          status: false,
+          message: "Employee Not Found",
+          data: null,
+        });
+      }
 
-    if (!existingUser) {
-      return res.status(404).json({
-        status: false,
-        message: "Employee Not Found",
-        data: null,
+      // Hapus user
+      await prisma.user.delete({
+        where: { id: Number(id) },
       });
-    }
 
-    // Hapus user
-    await prisma.user.delete({
-      where: { id: Number(id) },
-    });
-
-    return res.status(200).json({
-      status: true,
-      message: "Deleted Employee Successfully",
-    });
+      return res.status(200).json({
+        status: true,
+        message: "Deleted Employee Successfully",
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 };
