@@ -572,7 +572,7 @@ module.exports = {
   editEmployee: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { fullname, email, phoneNumber } = req.body;
+      const { fullname, email, phoneNumber, role } = req.body;
       const emailValidator = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       // Validasi ID
@@ -635,11 +635,22 @@ module.exports = {
         });
       }
 
+      // Validasi role jika dikirim
+      const allowedRoles = ["employee", "admin"];
+      if (role && !allowedRoles.includes(role)) {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid role. Allowed roles: employee, admin.",
+          data: null,
+        });
+      }
+
       // Bangun objek update
       const updatedData = {};
       if (fullname !== undefined) updatedData.fullname = fullname;
       if (email !== undefined) updatedData.email = email;
       if (phoneNumber !== undefined) updatedData.phoneNumber = phoneNumber;
+      if (role !== undefined) updatedData.role = role;
 
       // Cek apakah ada data yang dikirim
       if (Object.keys(updatedData).length === 0) {
