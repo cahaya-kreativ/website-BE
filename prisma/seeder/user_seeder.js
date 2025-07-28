@@ -14,7 +14,7 @@ async function userAdmin(prisma) {
         phoneNumber: "08123456789",
         password: encryptedPassword,
         isVerified: true,
-        role: Role.admin,
+        role: Role.superAdmin,
         profile: {
           create: {
             address: "Jl. Jambu V, Pondok Tjandra",
