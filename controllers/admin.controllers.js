@@ -545,13 +545,16 @@ module.exports = {
     try {
       const employees = await prisma.user.findMany({
         where: {
-          role: "employee",
+          role: {
+            in: ["employee", "admin"], // menangkap employee dan admin
+          },
         },
         select: {
           id: true,
           fullname: true,
           email: true,
           phoneNumber: true,
+          role: true,
         },
       });
 
