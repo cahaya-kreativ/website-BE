@@ -18,7 +18,7 @@ const { restrict } = require("../middlewares/auth.middlewares");
 
 // API Admin
 router.post("/admin/login", loginAdmin);
-router.post("/add/employee", addEmployee);
+router.post("/add/employee",restrict, addEmployee);
 router.put("/change-password", restrict, updatePassword);
 router.get("/count/customers", restrict, countCustomers);
 router.get("/count/orders", restrict, countOrders);
