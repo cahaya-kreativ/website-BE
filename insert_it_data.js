@@ -16,7 +16,7 @@ async function main() {
         data: {
           name: "IT Inovasi dan Solusi",
           description: "Layanan pembuatan website company profile, aplikasi custom, ERP, dan Warehouse Management System untuk mendigitalisasi bisnis Anda.",
-          image: "/src/assets/img/IT/it_category.png",
+          image: "/img/IT/it_category.png",
           createdAt: now,
         },
       });
@@ -25,7 +25,7 @@ async function main() {
       console.log("Kategori sudah ada, memperbarui gambar...");
       await prisma.category.update({
         where: { id: category.id },
-        data: { image: "/src/assets/img/IT/it_category.png" }
+        data: { image: "/img/IT/it_category.png" }
       });
     }
 
@@ -40,7 +40,7 @@ async function main() {
           label: "Basic Web Profile",
           description: "Layanan pembuatan website company profile responsif dan modern untuk meningkatkan kredibilitas bisnis Anda di dunia digital.",
           detail: "Desain UI/UX Eksklusif, 5 Halaman Utama, Integrasi WhatsApp, SEO Basic, Free Domain & Hosting 1 Tahun, Garansi Maintenance 3 Bulan",
-          image: "/src/assets/img/IT/it_web.png",
+          image: "/img/IT/it_web.png",
           price: "3500000",
           duration: 720,
           category_id: category.id,
@@ -51,7 +51,7 @@ async function main() {
     } else {
       await prisma.product.update({
         where: { id: product1.id },
-        data: { image: "/src/assets/img/IT/it_web.png" }
+        data: { image: "/img/IT/it_web.png" }
       });
     }
 
@@ -66,7 +66,7 @@ async function main() {
           label: "Enterprise Solution",
           description: "Sistem ERP dan Warehouse Management System (WMS) yang dirancang khusus untuk memenuhi alur kerja dan kebutuhan perusahaan Anda.",
           detail: "Sistem Cloud-Based, Modul Inventory & Finance, Multi-user Role Access, Real-time Dashboard, Training Karyawan, Garansi Maintenance 6 Bulan",
-          image: "/src/assets/img/IT/it_erp.png",
+          image: "/img/IT/it_erp.png",
           price: "15000000",
           duration: 720,
           category_id: category.id,
@@ -77,7 +77,7 @@ async function main() {
     } else {
       await prisma.product.update({
         where: { id: product2.id },
-        data: { image: "/src/assets/img/IT/it_erp.png" }
+        data: { image: "/img/IT/it_erp.png" }
       });
     }
 
@@ -88,7 +88,7 @@ async function main() {
     if (!gallery) {
       await prisma.gallery.create({
         data: {
-          image: "/src/assets/img/IT/it_web.png, /src/assets/img/IT/it_erp.png",
+          image: "/img/IT/it_web.png, /img/IT/it_erp.png",
           category: "it_solution",
           createdAt: now,
         }
@@ -97,7 +97,7 @@ async function main() {
     } else {
       await prisma.gallery.update({
         where: { id: gallery.id },
-        data: { image: "/src/assets/img/IT/it_web.png, /src/assets/img/IT/it_erp.png" }
+        data: { image: "/img/IT/it_web.png, /img/IT/it_erp.png" }
       });
     }
 
