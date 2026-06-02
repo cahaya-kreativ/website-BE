@@ -178,5 +178,27 @@
         "duration": "720",
         "category_id": "3",
         "createdAt": ""
+    },
+    {
+        "name": "Pembuatan Website Company Profile",
+        "label": "Basic Web Profile",
+        "description": "Layanan pembuatan website company profile responsif dan modern untuk meningkatkan kredibilitas bisnis Anda di dunia digital.",
+        "detail": "Desain UI/UX Eksklusif, 5 Halaman Utama, Integrasi WhatsApp, SEO Basic, Free Domain & Hosting 1 Tahun, Garansi Maintenance 3 Bulan",
+        "image": "https://ik.imagekit.io/cahayakreativ/product/IT_Web.jpg?updatedAt=1746615377582",
+        "price": "3.500.000",
+        "duration": "720",
+        "category_id": "4",
+        "createdAt": ""
+    },
+    {
+        "name": "Custom Software / ERP System",
+        "label": "Enterprise Solution",
+        "description": "Sistem ERP dan Warehouse Management System (WMS) yang dirancang khusus untuk memenuhi alur kerja dan kebutuhan perusahaan Anda.",
+        "detail": "Sistem Cloud-Based, Modul Inventory & Finance, Multi-user Role Access, Real-time Dashboard, Training Karyawan, Garansi Maintenance 6 Bulan",
+        "image": "https://ik.imagekit.io/cahayakreativ/product/IT_ERP.jpg?updatedAt=1746615377582",
+        "price": "15.000.000",
+        "duration": "720",
+        "category_id": "4",
+        "createdAt": ""
     }
 ]

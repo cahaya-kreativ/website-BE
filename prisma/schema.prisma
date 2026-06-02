@@ -44,6 +44,7 @@ enum CategoryGallery {
   graduation
   event
   sosmed
+  it_solution
 }
 
 enum PaymentMethod {
